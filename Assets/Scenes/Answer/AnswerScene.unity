@@ -203,7 +203,7 @@ GameObject:
   - component: {fileID: 123117171}
   - component: {fileID: 123117173}
   m_Layer: 5
-  m_Name: Next
+  m_Name: NextButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -279,7 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0.72506726, g: 0.72506726, b: 0.72506726, a: 1}
+  m_EffectColor: {r: 0.66576815, g: 0.66576815, b: 0.66576815, a: 1}
   m_EffectDistance: {x: 5, y: -5}
   m_UseGraphicAlpha: 1
 --- !u!1 &234873212
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 234873215}
   - component: {fileID: 234873214}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: Answerls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -448,7 +448,7 @@ GameObject:
   - component: {fileID: 321587530}
   - component: {fileID: 321587529}
   m_Layer: 5
-  m_Name: Answer
+  m_Name: AnswerInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
