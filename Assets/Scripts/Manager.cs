@@ -1,35 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class Manager : MonoBehaviour
 {
+    public static Manager instance; //ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
+
+    public List<Savedata> savedata = new List<Savedata>(); //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã®ãƒªã‚¹ãƒˆ
+    public List<Quiz> quiz = new List<Quiz>(); //ã‚¯ã‚¤ã‚ºã®ãƒªã‚¹ãƒˆ
+    public int currentQuiz = 0; //ç¾åœ¨ã®ã‚¯ã‚¤ã‚ºã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+
     [System.Serializable]
     public class Savedata
     {
-        public string gotStatement;     //•·‚«æ‚Á‚½–â‘è•¶
-        public int canceledNoise = 0;   //ƒLƒƒƒ“ƒZƒ‹‚µ‚½ƒmƒCƒY‚ÌŒÂ”
-        public int generatedNoise = 0;  //”­¶‚µ‚½ƒmƒCƒY‚ÌŒÂ”
-        public int selectedAnswer;      //‘I‚Î‚ê‚½‘I‘ğˆ
+        public string gotStatement;     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è•¶
+        public int canceledNoise = 0;   //ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½Cï¿½Yï¿½ÌŒÂï¿½
+        public int generatedNoise = 0;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½Cï¿½Yï¿½ÌŒÂï¿½
+        public int selectedAnswer;      //ï¿½Iï¿½Î‚ê‚½ï¿½Iï¿½ï¿½ï¿½ï¿½
     }
 
     [System.Serializable]
     public class Quiz
     {
-        string statement;       //–â‘è•¶
-        List<string> choices;   //‘I‘ğˆ‚Ì•¶Í
-        int answer;             //‚Ç‚Ì‘I‘ğˆ‚ª³‰ğ‚©
+        public string statement;       //ï¿½ï¿½è•¶
+        public List<string> choices;   //ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ì•ï¿½ï¿½ï¿½
+        public int answer;             //ï¿½Ç‚Ì‘Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void GenerateQuiz()
     {
-        
+        string filepath;
+        string fileName = "Data.json";
+        filepath = Application.dataPath + "/" + fileName;  
+
+    }
+
+    public void Save(Savedata data)
+    {
+        savedata.Add(data); //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ 
     }
 }

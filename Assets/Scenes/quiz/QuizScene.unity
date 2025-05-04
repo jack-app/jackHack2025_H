@@ -819,6 +819,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1035006730}
   m_CullTransparentMesh: 1
+--- !u!1 &1366360411
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1366360413}
+  - component: {fileID: 1366360412}
+  m_Layer: 0
+  m_Name: quizManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1366360412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366360411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e413ae3e71cfd3843a25918122ac4cd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  choise1: {fileID: 1035006730}
+  choise2: {fileID: 711902768}
+  choise3: {fileID: 856849488}
+  prefab: {fileID: 3717055851951815194, guid: d6ab04cee9270fc4ab5832536f7b55c6, type: 3}
+--- !u!4 &1366360413
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366360411}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.24651504, y: -0.018798541, z: 1252.9019}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1519114339
 GameObject:
   m_ObjectHideFlags: 0
@@ -1144,3 +1192,4 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 711541402}
   - {fileID: 520161553}
+  - {fileID: 1366360413}
