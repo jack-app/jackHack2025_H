@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ResultManager : MonoBehaviour
 {
@@ -10,9 +12,9 @@ public class ResultManager : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    // Click to Go title Scene
+    public void GoTitle()
     {
-        
+        SceneManager.LoadScene("TitleScene");
     }
 }
