@@ -38,7 +38,7 @@ public class AnswerManager : MonoBehaviour
         // ゲーム終了となるクイズ解答回数
         const int gamePlayCount = 5;
         
-        if (currentPlayCount <= gamePlayCount) {
+        if (currentPlayCount == gamePlayCount) {
             UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
         } else {
             UnityEngine.SceneManagement.SceneManager.LoadScene("ResultScene");
