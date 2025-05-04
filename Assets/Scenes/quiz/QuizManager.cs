@@ -15,7 +15,7 @@ public class QuizManager : MonoBehaviour
     // 問題および選択肢の文章をUIに反映
     void Start()
     {
-        String[] choises = Manager.instance.quiz[Manager.instance.currentQuiz].choices.ToArray(); //選択肢の取得
+        string[] choises = Manager.quiz[Manager.currentQuiz].choices.ToArray(); //選択肢の取得
 
         GenerateStatement();
 
@@ -27,7 +27,7 @@ public class QuizManager : MonoBehaviour
     // Startの中で呼び出され、聞き取れた問題文を表示する。問題文は一文字ずつPrefabとして生成する
     void GenerateStatement()
     {
-        String statement = Manager.instance.savedata[Manager.instance.currentQuiz].gotStatement; //問題文の取得
+        string statement = Manager.savedata[Manager.currentQuiz].gotStatement; //問題文の取得
         GameObject parent = GameObject.Find("Canvas"); //親オブジェクトの取得
         Vector2 basePosition = new Vector2(100, 700); // 初期位置を設定
 

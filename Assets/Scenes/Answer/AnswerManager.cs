@@ -1,21 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class AnswerManager : MonoBehaviour
 {
+    /*みっきーのコメント
+      通常の変数名は小文字で始めることが多い
+      TaishiはImageでなく直接RectTransformで受け取っても良い(Image.recttransformでアクセスできるのは自分も知らなかった！)
+      今回は問題ないが、オブジェクトをアタッチしたいときはpublicより[SerializeField] privateの方が安全(他のプログラムがアクセスできないため)
+    */
+
     // 模範解答
-    public UnityEngine.UI.Text Answer;
+    public Text Answer;
     // 出題者からのコメント
-    public UnityEngine.UI.Text Comment;
+    public Text Comment;
     // 聖徳太子
-    public UnityEngine.UI.Image Taishi;
+    public Image Taishi;
     
     // Start is called before the first frame update
     void Start()
     {
-        const int playerAnswer = 1;
-        const int correctAnswer = 2;
+        int playerAnswer = 1;
+        int correctAnswer = 2;
 
         Answer.text = correctAnswer.ToString();
 
@@ -34,14 +42,14 @@ public class AnswerManager : MonoBehaviour
     public void Next()
     {
         // 現在のクイズ解答回数
-        const int currentPlayCount = 1;
+        int currentPlayCount = 1;
         // ゲーム終了となるクイズ解答回数
-        const int gamePlayCount = 5;
+        int gamePlayCount = 5;
         
         if (currentPlayCount == gamePlayCount) {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+            SceneManager.LoadScene("GameScene");
         } else {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("ResultScene");
+            SceneManager.LoadScene("ResultScene");
         }
     }
 }
