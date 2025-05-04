@@ -906,7 +906,6 @@ Start importing Assets/Images/fukidashi.png using Guid(848a7a1d69d65624b94c9ecb3
 Number of updated asset objects reloaded before import = 0
 Number of asset objects unloaded after import = 3
 Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
-TcpMessagingSession - receive error: operation aborted. errorcode: 995, details: ƒXƒŒƒbƒh‚ÌI—¹‚Ü‚½‚ÍƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ì—v‹‚É‚æ‚Á‚ÄAI/O ˆ—‚Í’†~‚³‚ê‚Ü‚µ‚½B
+TcpMessagingSession - receive error: operation aborted. errorcode: 995, details: ã‚¹ãƒ¬ãƒƒãƒ‰ã®çµ‚äº†ã¾ãŸã¯ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®è¦æ±‚ã«ã‚ˆã£ã¦ã€I/O å‡¦ç†ã¯ä¸­æ­¢ã•ã‚Œã¾ã—ãŸã€‚
 AssetImportWorker is now disconnected from the server
 Process exiting
-Exiting without the bug reporter. Application will terminate with return code 0
