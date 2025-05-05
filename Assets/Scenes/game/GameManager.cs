@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Material m;
     [SerializeField] private RectTransform taishiRect;
+    [SerializeField] private Text gotcharnumber;
     private bool isGame = false;    //ゲーム中にtrueになる変数
     private float intervalCount = 0f;
     // Start is called before the first frame update
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
         isGame = true;  //本来はクリックなどでプレイヤーが開始させてからtrueになる
         StartCoroutine(TaishiMove());
         StartCoroutine(BeetMove());
+        //StartCoroutine(Gotcharnumber());
     }
 
     // Update is called once per frame
@@ -79,6 +81,34 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+    
+    //聞き取った文字数を表示
+    private IEnumerator Gotcharnumber()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => isGame);
+            while (true)
+            {
+
+                //Manager.Savedata savedata = new Manager.Savedata();
+                //Manager.Quiz quiz = new Manager.Quiz();
+                //Manager.Savedata savedata=Manager.savedata[0];
+                //Manager.Quiz quiz = Manager.quiz[0];
+
+                List<Manager.Savedata> savedata = Manager.savedata; //セーブデータのリスト
+                List<Manager.Quiz> quiz = Manager.quiz; //クイズのリスト
+                string gotstatement=savedata[0].gotStatement;
+                string statement=quiz[0].statement;
+                int gotnumber=gotstatement.Length;
+                int charnumber=statement.Length;
+                gotcharnumber.text=gotnumber.ToString()+"/"+charnumber.ToString()+"/文字だよ";
+                //gotcharnumber.text="/文字だよ";
+                yield return null;
+            }
+        }
+        
     }
     private void OnDestroy()
     {
