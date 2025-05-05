@@ -30,4 +30,17 @@ public class Canceler : MonoBehaviour
             cancelerRect.localEulerAngles = new(0, 0, angle * Mathf.Rad2Deg - 90);
         }
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Voice"))
+        {
+            //文字の取得
+
+            Destroy(collision.gameObject);
+        }
+        else if (collision.CompareTag("Noise"))
+        {
+            Destroy(collision.gameObject);
+        }
+    }
 }
