@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+//using Newtonsoft.Json;
 
 public class Manager : MonoBehaviour
 {
     public static Manager instance; //シングルトン用インスタンス
 
-    public List<Savedata> savedata = new List<Savedata>(); //セーブデータのリスト
-    public List<Quiz> quiz = new List<Quiz>(); //クイズのリスト
-    public int currentQuiz = 0; //現在のクイズのインデックス
+    public static List<Savedata> savedata = new List<Savedata>(); //セーブデータのリスト
+    public static List<Quiz> quiz = new List<Quiz>(); //クイズのリスト
+    public static int currentQuiz = 0; //現在のクイズのインデックス
 
     [System.Serializable]
     public class Savedata
@@ -28,29 +29,33 @@ public class Manager : MonoBehaviour
         public int answer;             //�ǂ̑I������������
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
+            //完成するまでのデバッグ用セーブデータ
+            Savedata data = new();
+            data.gotStatement = "聖  子が  れたのは 歴何年？";
+            data.canceledNoise = 3;
+            data.generatedNoise = 3;
+            data.selectedAnswer = 2;
+            Save(data);
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 
-    public void GenerateQuiz()
+    public static void GenerateQuiz()
     {
-        string filepath;
-        string fileName = "Data.json";
-        filepath = Application.dataPath + "/" + fileName;  
-
+        string jsonString = Resources.Load<TextAsset>("quizzes").text;  //パスはビルドしたときに変わってしまう
+        //quiz = JsonConvert.DeserializeObject<List<Quiz>>(jsonString);
     }
 
-    public void Save(Savedata data)
+    public static void Save(Savedata data)
     {
         savedata.Add(data); //セーブデータをリストに追加
     }

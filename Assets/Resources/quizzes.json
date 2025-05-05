@@ -1,0 +1,164 @@
+[
+  {
+    "statement": "聖徳太子が生まれたのは西暦何年？",
+    "choices": [
+      "622年",
+      "574年",
+      "601年"
+    ],
+    "answer": 2
+  },
+  {
+    "statement": "JavaScriptと言えばReactですが、Rubyと言えば?",
+    "choices": [
+      "Rails",
+      "Laravel",
+      "Qwik"
+    ],
+    "answer": 1
+  },
+  {
+    "statement": "Oのフォネティックコードは?",
+    "choices": [
+      "Outer",
+      "Oslo",
+      "Oscar"
+    ],
+    "answer": 3
+  },
+  {
+    "statement": "旧帝大のうち名大の設立が最後ですが、最後から2番目は?",
+    "choices": [
+      "九大",
+      "阪大",
+      "東北大"
+    ],
+    "answer": 2
+  },
+  {
+    "statement": "国際原子力機関の略称は英字4文字でなに?",
+    "choices": [
+      "IEEE",
+      "IAEA",
+      "ICAN"
+    ],
+    "answer": 2
+  },
+  {
+    "statement": "東海地方にない三種の神器は？",
+    "choices": [
+      "八咫鏡",
+      "八尺瓊勾玉",
+      "草薙剣"
+    ],
+    "answer": 2
+  },
+  {
+    "statement": "飛鳥時代のチーズといえば？",
+    "choices": [
+      "そ",
+      "わ",
+      "ま"
+    ],
+    "answer": 1
+  },
+  {
+    "statement": "日本の最南端の島の名前は？",
+    "choices": [
+      "沖ノ鳥島",
+      "南鳥島",
+      "与那国島"
+    ],
+    "answer": 1
+  },
+  {
+    "statement": "聖徳太子の叔母は？",
+    "choices": [
+      "後鳥羽上皇",
+      "鳥羽上皇",
+      "推古天皇"
+    ],
+    "answer": 3
+  },
+  {
+    "statement": "赤外線を表すIRは何の略称？",
+    "choices": [
+      "Infra-Red",
+      "Intensive-Ray",
+      "Invisible-Red"
+    ],
+    "answer": 1
+  },
+  {
+    "statement": "紫外線を表すUVは何の略称？",
+    "choices": [
+      "Urban-Violet",
+      "Ultra-Violet",
+      "Ultimate-Violet"
+    ],
+    "answer": 2
+  },
+  {
+    "statement": "ネオジムの元素記号は",
+    "choices": [
+      "Nd",
+      "Ng",
+      "Nz"
+    ],
+    "answer": 1
+  },
+  {
+    "statement": "有名人の不適切な言動を批判し排除しようとする動きは？",
+    "choices": [
+      "インフォデミックキャンセル",
+      "ガスライティング",
+      "キャンセルカルチャー"
+    ],
+    "answer": 3
+  },
+  {
+    "statement": "トランプのジャックは何者?",
+    "choices": [
+      "王子",
+      "騎士",
+      "召使い"
+    ],
+    "answer": 3
+  },
+  {
+    "statement": "せんとくんはどの遷都を記念したキャラ？",
+    "choices": [
+      "平安遷都",
+      "平城遷都",
+      "名古屋遷都"
+    ],
+    "answer": 2
+  },
+  {
+    "statement": "二重内陸国はどこ？",
+    "choices": [
+      "ウズベキスタン",
+      "カザフスタン",
+      "トルクメニスタン"
+    ],
+    "answer": 1
+  },
+  {
+    "statement": "モスクワの都心部にある広場の名前は？",
+    "choices": [
+      "青の広場",
+      "赤の広場",
+      "緑の広場"
+    ],
+    "answer": 2
+  },
+  {
+    "statement": "刑事ドラマ相棒の主人公,杉下？",
+    "choices": [
+      "左京",
+      "中京",
+      "右京"
+    ],
+    "answer": 3
+  }
+]
