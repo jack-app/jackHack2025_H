@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,12 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Material m;
     [SerializeField] private RectTransform taishiRect;
+    private string statement;
+    private int voiceNumber = 0;
+    //private string gotStatement = "";
+    private int gotChar = 0;
+    private int canceledNoise = 0;
+    private int generatedNoise = 0;
     [SerializeField] private Text gotCharNumber;
     [SerializeField] private Text canceledNoiseNumber;
     private bool isGame = false;    //ゲーム中にtrueになる変数
@@ -16,13 +21,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject voiceNotesPrefab;
     [SerializeField] private GameObject noiseNotesPrefab;
     private const int radius = 580;
-    private int voiceNumber = 0;
-    private int generatedNoise = 0;
+    
 
     // Start is called before the first frame update
     void Start()
     {
         isGame = true;  //本来はクリックなどでプレイヤーが開始させてからtrueになる
+        statement = Manager.quiz[Manager.currentQuiz].statement;
         StartCoroutine(TaishiMove());
         StartCoroutine(BeetMove());
         StartCoroutine(GotCharNumber());
@@ -36,7 +41,13 @@ public class GameManager : MonoBehaviour
         {
             if (intervalCount > Manager.interval)
             {
+                GenerateNotes();
                 intervalCount = 0;
+                //GenerateNotesで声ノーツが生成されたとき、voiceNumberは次に生成する文字のインデックスとなる
+                if (voiceNumber == statement.Length)
+                {
+                    isGame = false;
+                }
             }
             else
             {
@@ -44,9 +55,6 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
-
-
 
     //太子をノらせる
     private IEnumerator TaishiMove()
@@ -100,10 +108,9 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitUntil(() => isGame);
             while (true)
-            {                
-                string statement=Manager.quiz[Manager.currentQuiz].statement;
+            {
                 int charnumber=statement.Length;
-                gotCharNumber.text=voiceNumber.ToString()+"/"+charnumber.ToString()+"文字";
+                gotCharNumber.text = gotChar.ToString()+"/"+charnumber.ToString()+"文字";
                 //gotcharnumber.text="/文字だよ";
                 yield return null;
             }
@@ -118,9 +125,8 @@ public class GameManager : MonoBehaviour
         {
             yield return new WaitUntil(() => isGame);
             while (true)
-            {                
-                int canceledNoise = Manager.newData.canceledNoise; // TODO: ノイズの発生のたびに増やす値が必要
-                canceledNoiseNumber.text=generatedNoise.ToString()+"/"+canceledNoise.ToString()+"個";
+            {
+                canceledNoiseNumber.text = canceledNoise.ToString()+"/"+ generatedNoise.ToString()+"個";
                 //gotcharnumber.text="/文字だよ";
                 yield return null;
             }
@@ -134,9 +140,9 @@ public class GameManager : MonoBehaviour
 
     private void GenerateNotes()
     {
-        Vector2 pos = new Vector2(0, 0);
-        int rnd = Random.Range(1, 10);
-        int direction = Random.Range(1, 8);
+        Vector2 pos = new (0, 0);
+        int rnd = Random.Range(1, 11);
+        int direction = Random.Range(1, 9);
 
         switch (direction)
         {
@@ -169,16 +175,26 @@ public class GameManager : MonoBehaviour
         {
             GameObject notes = Instantiate(voiceNotesPrefab, notesParent.transform);
             notes.GetComponent<RectTransform>().anchoredPosition = pos;
-            notes.GetComponent<RectTransform>().localScale = new Vector2(1, 1);
-            notes.transform.Find("Char").GetComponent<Text>().text = "t";
+            notes.GetComponent<RectTransform>().localScale = new(1, 1);
+            notes.transform.Find("Char").GetComponent<Text>().text = statement[voiceNumber].ToString();
             voiceNumber++;
         }
         else if(rnd <= 8)
         {
             GameObject notes = Instantiate(noiseNotesPrefab, notesParent.transform);
             notes.GetComponent<RectTransform>().anchoredPosition = pos;
-            notes.GetComponent<RectTransform>().localScale = new Vector2(1, 1);
+            notes.GetComponent<RectTransform>().localScale = new(1, 1);
             generatedNoise++;
         }
     }
+    //Taishi.csから呼び出し、どの文字を聞き取ったかの処理を行う
+    //public void GetChar(string c)
+    //{
+
+    //}
+    //Canceler.csから呼び出し、キャンセルしたノイズについての処理を行う(cancelledNoiseをpublicにするだけでもいいかも)
+    //public void CancelNoise()
+    //{
+
+    //}
 }

@@ -68,14 +68,14 @@ public class TutorialManager : MonoBehaviour
     {
         GameObject notes = Instantiate(voiceNotesPrefab, notesParent.transform);
         notes.GetComponent<RectTransform>().anchoredPosition = pos;
-        notes.GetComponent<RectTransform>().localScale = new Vector2(1, 1);
+        notes.GetComponent<RectTransform>().localScale = new(1, 1);
         notes.transform.Find("Char").GetComponent<Text>().text = c;
     }
     private void GenerateNoiseNotes(Vector2 pos)
     {
         GameObject notes = Instantiate(noiseNotesPrefab, notesParent.transform);
         notes.GetComponent<RectTransform>().anchoredPosition = pos;
-        notes.GetComponent<RectTransform>().localScale = new Vector2(1, 1);
+        notes.GetComponent<RectTransform>().localScale = new(1, 1);
     }
     public void Title()
     {
