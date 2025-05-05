@@ -1,54 +1,64 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class ResultManager : MonoBehaviour
 {
-    public Text Text_Letters_Sum;
-    public Text Text_Noise_Sum;
-    public Text Text_Score_Sum;
+    [SerializeField] private Text text_Letters_Sum;
+    [SerializeField] private Text text_Noise_Sum;
+    [SerializeField] private Text text_Score_Sum;
+    [SerializeField] private RectTransform buttonRect;
+    [SerializeField] private GameObject black;
+    int charSum = 0;
     int heardCharsSum = 0;
     int canceledNoiseSum = 0;
-    int correctAnswers; //正答数がsavedataから見れるようになってから
+    int generatedNoiseSum = 0;
+    int correctAnswers = 0;
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(Commons.FadeIn(black));
         foreach(Manager.Savedata data in Manager.savedata)
         {
-            for(int i = 0; i < data.gotStatement.Length; i++){
-                if (data.gotStatement[i] != ' ') 
-                {
-                    heardCharsSum += 1;
-                }
-            }
+            charSum += data.gotStatement.Length;
+            heardCharsSum += data.gotVoice;
             canceledNoiseSum += data.canceledNoise;
-            //正答数がsavedataから見れるようになってから処理を追加
+            generatedNoiseSum += data.generatedNoise;
+            if (data.isCorrect)
+            {
+                correctAnswers++;
+            }
         }
-        showHeardChars();
-        showCanceledNoise();
-        showCorrectAnswers();
+        ShowHeardChars();
+        ShowCanceledNoise();
+        ShowCorrectAnswers();
     }
 
-    void showHeardChars()
+    void ShowHeardChars()
     {
-        Text_Letters_Sum.text = heardCharsSum.ToString();
+        text_Letters_Sum.text = heardCharsSum.ToString() + " / " + charSum.ToString() + " 文字";
     }
 
-    void showCanceledNoise()
+    void ShowCanceledNoise()
     {
-        Text_Noise_Sum.text = canceledNoiseSum.ToString();
+        text_Noise_Sum.text = canceledNoiseSum.ToString() + " / " + generatedNoiseSum.ToString() + " 個";
     }
 
-    void showCorrectAnswers()//正答数がsavedataから見れるようになってから
+    void ShowCorrectAnswers()//正答数がsavedataから見れるようになってから
     {
-        Text_Score_Sum.text = correctAnswers.ToString();
+        text_Score_Sum.text = correctAnswers.ToString() + " / " + Manager.quizNumber.ToString() + " 問";
     }
 
     // Click to Go title Scene
     public void GoTitle()
     {
+        StartCoroutine(Commons.Button(buttonRect));
+        StartCoroutine(GoTitleCoroutine());
+    }
+    private IEnumerator GoTitleCoroutine()
+    {
+        yield return StartCoroutine(Commons.FadeOut(black));
         SceneManager.LoadScene("TitleScene");
     }
 }

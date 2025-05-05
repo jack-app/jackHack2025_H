@@ -1,17 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
+using System.Linq;
+using System;
 
 public class Manager : MonoBehaviour
 {
     public static Manager instance; //シングルトン用インスタンス
 
-    public static List<Savedata> savedata = new List<Savedata>(); //セーブデータのリスト
-    public static Savedata newData = new Savedata();              //最新のセーブデータ格納用
-    public static List<Quiz> quiz = new List<Quiz>(); //クイズのリスト
+    public static List<Savedata> savedata = new(); //セーブデータのリスト
+    public static Savedata newData = new();              //最新のセーブデータ格納用
+    public static List<Quiz> quiz = new(); //クイズのリスト
+    public static int quizNumber = 5;   //1回のゲームで5問出題
     public static int currentQuiz = 0; //現在のクイズのインデックス
     public static float interval = 0.33f;   //ノーツ生成の間隔
 
@@ -39,8 +40,9 @@ public class Manager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            UnityEngine.Random.InitState(DateTime.Now.Millisecond);
             DontDestroyOnLoad(gameObject);
-            //完成するまでのデバッグ用セーブデータ
+            //完成するまでのデバッグ用データ
             if (SceneManager.GetActiveScene().name != "TitleScene")
             {
                 newData.gotStatement = "聖  子が  れたのは 歴何年？";
@@ -50,9 +52,9 @@ public class Manager : MonoBehaviour
                 newData.selectedAnswer = 2;
                 newData.isCorrect = true;
                 Save();
-                if(Manager.quiz.Count != 0){
-                    GenerateQuiz();  // クイズ読み込み
-                }
+                GenerateQuiz();
+                newData.gotStatement = quiz[0].statement;
+                newData.selectedAnswer = 2;
             }
         }
         else
@@ -61,16 +63,30 @@ public class Manager : MonoBehaviour
         }
     }
 
+    //ランダムに5問選び、文章の短い順に並べる
     public static void GenerateQuiz()
     {
-        string jsonString = Resources.Load<TextAsset>("quizzes").text;  //パスはビルドしたときに変わってしまう
-        quiz = JsonConvert.DeserializeObject<List<Quiz>>(jsonString);
-        Debug.Log(quiz);
+        quiz.Clear();
+        currentQuiz = 0;
+        string jsonString = Resources.Load<TextAsset>("quizzes").text;
+        List<Quiz> allQuiz = JsonConvert.DeserializeObject<List<Quiz>>(jsonString);
+        List<int> used = new();
+        while (quiz.Count < quizNumber)
+        {
+            int q = UnityEngine.Random.Range(0, allQuiz.Count);
+            if (!used.Contains(q))
+            {
+                quiz.Add(allQuiz[q]);
+                used.Add(q);
+            }
+        }
+        //quiz = quiz.OrderBy(x => x.statement.Length).ToList();    短い順にすると総問題数が少ない場合毎回似た順番になってしまう
     }
 
     public static void Save()
     {
         savedata.Add(newData); //セーブデータをリストに追加
         newData = new();
+        currentQuiz++;
     }
 }

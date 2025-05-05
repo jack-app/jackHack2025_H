@@ -1,64 +1,45 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Threading;
 
 public class QuizManager : MonoBehaviour
 {
-    [SerializeField] GameObject choise1;
-    [SerializeField] GameObject choise2;
-    [SerializeField] GameObject choise3;
+    [SerializeField] private Text choise1;
+    [SerializeField] private Text choise2;
+    [SerializeField] private Text choise3;
+    [SerializeField] private RectTransform choise1Rect;
+    [SerializeField] private RectTransform choise2Rect;
+    [SerializeField] private RectTransform choise3Rect;
     [SerializeField] GameObject prefab;
+    [SerializeField] GameObject statementParent;
     [SerializeField] Text countText;
-    private bool isGame = false;    //ゲーム中にtrueになる変数
-    Button choise1button;
-    Button choise2button;
-    Button choise3button;
+    [SerializeField] private GameObject timeup;
+    [SerializeField] private GameObject black;
 
-    //　トータル制限時間
-	private float totalTime;
-	//　制限時間（分）
-	[SerializeField]
-	private int minute;
-	//　制限時間（秒）
-	[SerializeField]
-	private float seconds;
-	//　前回Update時の秒数
-	private float oldSeconds;
-
+    private int seconds = 10;
+    private bool choised = false;
 
     // 問題および選択肢の文章をUIに反映
     void Start()
     {
-        isGame=true;
         string[] choises = Manager.quiz[Manager.currentQuiz].choices.ToArray(); //選択肢の取得
-
+        timeup.SetActive(false);
         GenerateStatement();
-        
-        choise1.transform.GetChild(0).GetComponent<Text>().text = choises[0];
-        choise2.transform.GetChild(0).GetComponent<Text>().text = choises[1];
-        choise3.transform.GetChild(0).GetComponent<Text>().text = choises[2];
-        choise1button =  choise1.transform.GetComponent<Button>();
-        choise2button =  choise2.transform.GetComponent<Button>();
-        choise3button =  choise3.transform.GetComponent<Button>();
-
-        minute=0;
-        totalTime = 10; //minute * 60 + seconds;
-		oldSeconds = 0f;
-        seconds=10;
-        StartCoroutine(timer());
+        choise1.text = choises[0];
+        choise2.text = choises[1];
+        choise3.text = choises[2];
+        StartCoroutine(Commons.FadeIn(black));
+        StartCoroutine(Timer());
     }
     
     // Startの中で呼び出され、聞き取れた問題文を表示する。問題文は一文字ずつPrefabとして生成する
     void GenerateStatement()
     {
-        string statement = Manager.savedata[Manager.currentQuiz].gotStatement; //問題文の取得
-        GameObject parent = GameObject.Find("Canvas"); //親オブジェクトの取得
+        string statement = Manager.newData.gotStatement;
+        int circleSize = 70;
 
-        Vector2 basePosition = new Vector2(960-(int)(statement.Length/2)*100, 850); // 初期位置を設定
+        Vector2 basePosition = new(-700,400); // 初期位置を設定
         int line = 0; // 何行目か
         int letter = 0; // line行目の何文字目か
         
@@ -70,23 +51,23 @@ public class QuizManager : MonoBehaviour
                 letter = 0; // 行の文字リセット
             }
 
-            Vector3 position = basePosition + new Vector2(100 * letter, -line * 70); // 各文字の位置を計算
+            Vector2 position = basePosition + new Vector2(circleSize * letter, -circleSize * line); // 各文字の位置を計算
             char varchar = statement[i];
 
             if (varchar == ' ')
             {
-                var instance = Instantiate(prefab, parent.transform);
+                GameObject instance = Instantiate(prefab, statementParent.transform);
                 instance.GetComponent<RectTransform>().anchoredPosition = position; // 各文字の位置を設定
-                instance.GetComponent<RectTransform>().localScale = new Vector2(1.0f, 1.0f); // スケールを設定
-                instance.transform.Find("char").GetComponent<Text>().text = " ";
-                instance.transform.Find("noise").GetComponent<Image>().enabled = true;
+                instance.GetComponent<RectTransform>().localScale = new (1, 1); // スケールを設定
+                instance.transform.Find("Char").GetComponent<Text>().text = " ";
+                instance.transform.Find("Noise").GetComponent<Image>().enabled = true;
                 
             } else {
-                var instance = Instantiate(prefab, parent.transform);
+                GameObject instance = Instantiate(prefab, statementParent.transform);
                 instance.GetComponent<RectTransform>().anchoredPosition = position;
-                instance.GetComponent<RectTransform>().localScale = new Vector2(1.0f, 1.0f); // スケールを設定
-                instance.transform.Find("char").GetComponent<Text>().text = varchar.ToString();
-                instance.transform.Find("noise").GetComponent<Image>().enabled = false;
+                instance.GetComponent<RectTransform>().localScale = new (1, 1); // スケールを設定
+                instance.transform.Find("Char").GetComponent<Text>().text = varchar.ToString();
+                instance.transform.Find("Noise").GetComponent<Image>().enabled = false;
             }
 
             letter++;
@@ -94,40 +75,72 @@ public class QuizManager : MonoBehaviour
     }
 
     // タイマーとボタン押せなくする
-    private IEnumerator timer()
+    private IEnumerator Timer()
     {
-        //while(true)
-        //{
-            yield return new WaitUntil(() => isGame);
-            while(seconds>0)
-            {           
-                // 1秒間待つ
-                yield return new WaitForSeconds(1);
+        while(seconds > 0)
+        {           
+            // 1秒間待つ
+            yield return new WaitForSeconds(1);
 
-                totalTime--;
-                seconds = totalTime ;
+            if (!choised)
+            {
+                seconds--;
                 //　タイマー表示用UIテキストに時間を表示する
-                //if((int)seconds != (int)oldSeconds) {
-                    countText.text = ((int) seconds).ToString();//minute.ToString("00") + ":" + ((int) seconds).ToString("00");
-                //}
-                
-                oldSeconds = seconds;
+                countText.text = seconds.ToString();
+
                 //　制限時間以下になったらコンソールに『制限時間終了』という文字列を表示する
-                if(totalTime <= 0f) {
+                if (seconds == 0)
+                {
                     Debug.Log("制限時間終了");
-                    choise1button.interactable = false;
-                    choise2button.interactable = false;
-                    choise3button.interactable = false;
+                    StartCoroutine(TimeUp());
                 }
-                
             }
-            yield return null;
-        //}
+        }
+    }
+
+    private IEnumerator TimeUp()
+    {
+        timeup.SetActive(true);
+        Manager.newData.selectedAnswer = 0;
+        yield return new WaitForSeconds(1);
+        yield return StartCoroutine(Commons.FadeOut(black));
+        SceneManager.LoadScene("AnswerScene");
+    }
+
+    private IEnumerator Answer()
+    {
+        choised = true;
+        yield return new WaitForSeconds(0.2f);
+        yield return StartCoroutine(Commons.FadeOut(black));
+        SceneManager.LoadScene("AnswerScene");
     }
 
     // 選択肢を決定した時に呼び出され、どの選択肢を選んだかをセーブし答え合わせ画面に遷移
-    public void Answer()
-    {  
-        Debug.Log("押された");
+    public void Answer1()
+    {
+        if (!choised)
+        {
+            StartCoroutine(Commons.Button(choise1Rect));
+            Manager.newData.selectedAnswer = 1;
+            StartCoroutine(Answer());
+        }
+    }
+    public void Answer2()
+    {
+        if (!choised)
+        {
+            StartCoroutine(Commons.Button(choise2Rect));
+            Manager.newData.selectedAnswer = 2;
+            StartCoroutine(Answer());
+        }
+    }
+    public void Answer3()
+    {
+        if (!choised)
+        {
+            StartCoroutine(Commons.Button(choise3Rect));
+            Manager.newData.selectedAnswer = 3;
+            StartCoroutine(Answer());
+        }
     }
 }
