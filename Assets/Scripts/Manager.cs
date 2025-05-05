@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-//using Newtonsoft.Json;
+//using System.Text.Json;
 
 public class Manager : MonoBehaviour
 {
@@ -11,6 +11,7 @@ public class Manager : MonoBehaviour
     public static List<Savedata> savedata = new List<Savedata>(); //セーブデータのリスト
     public static List<Quiz> quiz = new List<Quiz>(); //クイズのリスト
     public static int currentQuiz = 0; //現在のクイズのインデックス
+    public static float interval = 0.33f;   //ノーツ生成の間隔
 
     [System.Serializable]
     public class Savedata
@@ -52,7 +53,8 @@ public class Manager : MonoBehaviour
     public static void GenerateQuiz()
     {
         string jsonString = Resources.Load<TextAsset>("quizzes").text;  //パスはビルドしたときに変わってしまう
-        //quiz = JsonConvert.DeserializeObject<List<Quiz>>(jsonString);
+        //quiz = JsonSerializer.Deserialize<List<Quiz>>(jsonString);
+        //Debug.Log(quiz);
     }
 
     public static void Save(Savedata data)
