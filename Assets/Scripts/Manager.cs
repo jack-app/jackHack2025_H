@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-//using System.Text.Json;
+using Newtonsoft.Json;
 
 public class Manager : MonoBehaviour
 {
@@ -53,8 +53,8 @@ public class Manager : MonoBehaviour
     public static void GenerateQuiz()
     {
         string jsonString = Resources.Load<TextAsset>("quizzes").text;  //パスはビルドしたときに変わってしまう
-        //quiz = JsonSerializer.Deserialize<List<Quiz>>(jsonString);
-        //Debug.Log(quiz);
+        quiz = JsonConvert.DeserializeObject<List<Quiz>>(jsonString);
+        Debug.Log(quiz);
     }
 
     public static void Save(Savedata data)
