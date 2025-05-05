@@ -42,7 +42,7 @@ public class QuizManager : MonoBehaviour
                 letter = 0; // 行の文字リセット
             }
 
-            Vector3 position = basePosition + new Vector2(100 * letter, -line * 50); // 各文字の位置を計算
+            Vector3 position = basePosition + new Vector2(100 * letter, -line * 70); // 各文字の位置を計算
             char varchar = statement[i];
 
             if (varchar == ' ')
