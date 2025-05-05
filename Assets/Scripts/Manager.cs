@@ -50,7 +50,9 @@ public class Manager : MonoBehaviour
                 newData.selectedAnswer = 2;
                 newData.isCorrect = true;
                 Save();
-                GenerateQuiz();
+                if(Manager.quiz.Count != 0){
+                    GenerateQuiz();  // クイズ読み込み
+                }
             }
         }
         else
