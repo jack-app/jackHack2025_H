@@ -29,11 +29,20 @@ public class QuizManager : MonoBehaviour
     {
         string statement = Manager.savedata[Manager.currentQuiz].gotStatement; //問題文の取得
         GameObject parent = GameObject.Find("Canvas"); //親オブジェクトの取得
-        Vector2 basePosition = new Vector2(100, 700); // 初期位置を設定
 
+        Vector2 basePosition = new Vector2(960-(int)(statement.Length/2)*100, 850); // 初期位置を設定
+        int line = 0; // 何行目か
+        int letter = 0; // line行目の何文字目か
+        
         for(var i = 0; i < statement.Length; i++)
         {
-            Vector3 position = basePosition + new Vector2(70 * i, 0); // 各文字の位置を計算
+            if(letter >= 20)
+            {
+                line++; // 20文字ごとに1行加算
+                letter = 0; // 行の文字リセット
+            }
+
+            Vector3 position = basePosition + new Vector2(100 * letter, -line * 70); // 各文字の位置を計算
             char varchar = statement[i];
 
             if (varchar == ' ')
@@ -51,7 +60,8 @@ public class QuizManager : MonoBehaviour
                 instance.transform.Find("char").GetComponent<Text>().text = varchar.ToString();
                 instance.transform.Find("noise").GetComponent<Image>().enabled = false;
             }
-            
+
+            letter++;
         }
         
 
