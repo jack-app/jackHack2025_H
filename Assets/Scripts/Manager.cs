@@ -43,6 +43,7 @@ public class Manager : MonoBehaviour
             data.generatedNoise = 3;
             data.selectedAnswer = 2;
             Save(data);
+            GenerateQuiz();
         }
         else
         {

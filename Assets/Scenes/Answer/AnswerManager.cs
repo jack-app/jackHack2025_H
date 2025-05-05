@@ -22,19 +22,30 @@ public class AnswerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int playerAnswer = 1;
-        int correctAnswer = 2;
+        Manager.Quiz currentQuiz = Manager.quiz[Manager.currentQuiz];
+        
+        int playerAnswer = Manager.savedata[Manager.currentQuiz].selectedAnswer;
+        int correctAnswer = currentQuiz.answer;
 
-        Answer.text = correctAnswer.ToString();
+        var answerString = "";
+        switch (correctAnswer) {
+            case 1 : answerString = "①"; break;
+            case 2 : answerString = "②"; break;
+            case 3 : answerString = "③"; break;
+        }
+
+        Answer.text = answerString + " " + currentQuiz.choices[correctAnswer];
 
         if (playerAnswer == correctAnswer)
         {
             Comment.text = "さすが太子！！\n\n今日も髭がかっこいい！";
+            Taishi.transform.Find("Star").gameObject.SetActive(true);
         }
         else
         {
             Comment.text = "聞き取れてねーじゃん！！\n\nなんだよ変な髭しやがって！";
             Taishi.rectTransform.Rotate(new Vector3(0, 0, -20));
+            Taishi.transform.Find("ase").gameObject.SetActive(true);
         }
 
     }
