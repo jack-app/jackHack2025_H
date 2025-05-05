@@ -1055,6 +1055,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m: {fileID: 2100000, guid: 03e01de539f851240b0a80eb67950bcb, type: 2}
   taishiRect: {fileID: 126861831}
+  quizCharNumber: {fileID: 1553750330}
+  restCharNumber: {fileID: 1193529785}
   gotCharNumber: {fileID: 1401797295}
   canceledNoiseNumber: {fileID: 1938492340}
   notesParent: {fileID: 1030670488}

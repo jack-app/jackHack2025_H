@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     private int gotChar = 0;
     private int canceledNoise = 0;
     private int generatedNoise = 0;
+    [SerializeField] private Text quizCharNumber;
+    [SerializeField] private Text restCharNumber;
     [SerializeField] private Text gotCharNumber;
     [SerializeField] private Text canceledNoiseNumber;
     private bool isGame = false;    //ゲーム中にtrueになる変数
@@ -28,8 +30,10 @@ public class GameManager : MonoBehaviour
     {
         isGame = true;  //本来はクリックなどでプレイヤーが開始させてからtrueになる
         statement = Manager.quiz[Manager.currentQuiz].statement;
+        StartCoroutine(QuizCharNumber());
         StartCoroutine(TaishiMove());
         StartCoroutine(BeetMove());
+        StartCoroutine(RestCharNumber());
         StartCoroutine(GotCharNumber());
         StartCoroutine(CanceledNoiseNumber());
     }
@@ -99,6 +103,39 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    //何問目中何問目かを表示
+    private IEnumerator QuizCharNumber()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => isGame);
+            while (true)
+            {                
+                int totalQuizNumber=Manager.quiz.Count;
+                quizCharNumber.text=(Manager.currentQuiz+1)+"/"+totalQuizNumber.ToString()+"問目";
+                yield return null;
+            }
+        }
+        
+    }
+    
+    //残りの文字数を表示
+    private IEnumerator RestCharNumber()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => isGame);
+            while (true)
+            {                
+                string statement=Manager.quiz[Manager.currentQuiz].statement;
+                int restNumber=statement.Length-voiceNumber;
+                restCharNumber.text="残り"+restNumber.ToString()+"文字";
+                yield return null;
+            }
+        }
+        
     }
 
     //聞き取った文字数を表示
