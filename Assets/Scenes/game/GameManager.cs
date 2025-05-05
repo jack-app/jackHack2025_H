@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Material m;
     [SerializeField] private RectTransform taishiRect;
+    [SerializeField] private Text gotCharNumber;
+    [SerializeField] private Text canceledNoiseNumber;
     private bool isGame = false;    //ゲーム中にtrueになる変数
     private float intervalCount = 0f;
     [SerializeField] private GameObject notesParent;
@@ -16,12 +18,15 @@ public class GameManager : MonoBehaviour
     private const int radius = 580;
     private int voiceNumber = 0;
     private int generatedNoise = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         isGame = true;  //本来はクリックなどでプレイヤーが開始させてからtrueになる
         StartCoroutine(TaishiMove());
         StartCoroutine(BeetMove());
+        StartCoroutine(GotCharNumber());
+        StartCoroutine(CanceledNoiseNumber());
     }
 
     // Update is called once per frame
@@ -86,6 +91,41 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    //聞き取った文字数を表示
+    private IEnumerator GotCharNumber()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => isGame);
+            while (true)
+            {                
+                string statement=Manager.quiz[Manager.currentQuiz].statement;
+                int charnumber=statement.Length;
+                gotCharNumber.text=voiceNumber.ToString()+"/"+charnumber.ToString()+"文字";
+                //gotcharnumber.text="/文字だよ";
+                yield return null;
+            }
+        }
+        
+    }
+
+    //キャンセルしたノイズ数を表示
+    private IEnumerator CanceledNoiseNumber()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => isGame);
+            while (true)
+            {                
+                int canceledNoise = Manager.newData.canceledNoise; // TODO: ノイズの発生のたびに増やす値が必要
+                canceledNoiseNumber.text=generatedNoise.ToString()+"/"+canceledNoise.ToString()+"個";
+                //gotcharnumber.text="/文字だよ";
+                yield return null;
+            }
+        }
+        
     }
     private void OnDestroy()
     {
