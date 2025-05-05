@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private RectTransform taishiRect;
     private bool isGame = false;    //ゲーム中にtrueになる変数
     private float intervalCount = 0f;
+    [SerializeField] private GameObject notesParent;
+    [SerializeField] private GameObject voiceNotesPrefab;
+    [SerializeField] private GameObject noiseNotesPrefab;
+    private const int radius = 580;
+    private int voiceNumber = 0;
+    private int generatedNoise = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -83,5 +90,55 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         m.SetTextureOffset("_MainTex", new(0.3f, 0));
+    }
+
+    private void GenerateNotes()
+    {
+        Vector2 pos = new Vector2(0, 0);
+        int rnd = Random.Range(1, 10);
+        int direction = Random.Range(1, 8);
+
+        switch (direction)
+        {
+            case 1:
+                pos = new Vector2(radius, 0);
+                break;
+            case 2:
+                pos = new Vector2(radius * Mathf.Cos(Mathf.PI / 4), radius * Mathf.Sin(Mathf.PI / 4));
+                break;
+            case 3:
+                pos = new Vector2(0, radius);
+                break;
+            case 4:
+                pos = new Vector2(-radius * Mathf.Cos(Mathf.PI / 4), radius * Mathf.Sin(Mathf.PI / 4));
+                break;
+            case 5:
+                pos = new Vector2(-radius, 0);
+                break;
+            case 6:
+                pos = new Vector2(-radius * Mathf.Cos(Mathf.PI / 4), -radius * Mathf.Sin(Mathf.PI / 4));
+                break;
+            case 7:
+                pos = new Vector2(0, -radius);
+                break;
+            case 8:
+                pos = new Vector2(radius * Mathf.Cos(Mathf.PI / 4), -radius * Mathf.Sin(Mathf.PI / 4));
+                break;
+        }
+        if(rnd <= 5)
+        {
+            GameObject notes = Instantiate(voiceNotesPrefab, notesParent.transform);
+            notes.GetComponent<RectTransform>().anchoredPosition = pos;
+            notes.GetComponent<RectTransform>().localScale = new Vector2(1, 1);
+            notes.transform.Find("Char").GetComponent<Text>().text = "t";
+            voiceNumber++;
+        }
+        else if(rnd <= 8)
+        {
+            GameObject notes = Instantiate(noiseNotesPrefab, notesParent.transform);
+            notes.GetComponent<RectTransform>().anchoredPosition = pos;
+            notes.GetComponent<RectTransform>().localScale = new Vector2(1, 1);
+            generatedNoise++;
+        }
     }
 }
