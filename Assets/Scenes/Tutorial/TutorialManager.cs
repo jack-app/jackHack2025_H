@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,10 +21,10 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject noiseNotesPrefab;
     [SerializeField] private CancelerTutorial cTutorial;
     private const int radius = 580;
-    private string statement = "聖徳太子はどれ？";
+    private const string statement = "聖徳太子はどれ？";
     private int voiceNumber = 0;
     private string gotStatement = "";
-    private int gotChar = 0;
+    private int gotVoice = 0;
     private int canceledNoise = 0;
     private int generatedNoise = 0;
     private bool isGame = false;
@@ -34,11 +35,12 @@ public class TutorialManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        UnityEngine.Random.InitState(DateTime.Now.Millisecond);
         quizTutorial.SetActive(false);
         panel.SetActive(false);
         finish.SetActive(false);
         remainNumber.text = "残り" + (statement.Length - voiceNumber).ToString() + "文字";
-        gotCharNumber.text = gotChar.ToString() + "/" + voiceNumber.ToString() + "文字";
+        gotCharNumber.text = gotVoice.ToString() + "/" + voiceNumber.ToString() + "文字";
         canceledNoiseNumber.text = canceledNoise.ToString() + "/" + generatedNoise.ToString() + "個";
         StartCoroutine(Commons.FadeIn(black));
         StartCoroutine(MainCoroutine());
@@ -108,8 +110,8 @@ public class TutorialManager : MonoBehaviour
     private void GenerateNotes()
     {
         Vector2 pos = new(0, 0);
-        int rnd = Random.Range(1, 11);
-        int direction = Random.Range(1, 9);
+        int rnd = UnityEngine.Random.Range(1, 11);
+        int direction = UnityEngine.Random.Range(1, 9);
 
         switch (direction)
         {
@@ -155,7 +157,7 @@ public class TutorialManager : MonoBehaviour
         notes.transform.Find("Char").GetComponent<Text>().text = c;
         voiceNumber++;
         remainNumber.text = "残り" + (statement.Length - voiceNumber).ToString() + "文字";
-        gotCharNumber.text = gotChar.ToString() + "/" + voiceNumber.ToString() + "文字";
+        gotCharNumber.text = gotVoice.ToString() + "/" + voiceNumber.ToString() + "文字";
     }
     private void GenerateNoiseNotes(Vector2 pos)
     {
@@ -165,13 +167,13 @@ public class TutorialManager : MonoBehaviour
         generatedNoise++;
         canceledNoiseNumber.text = canceledNoise.ToString() + "/" + generatedNoise.ToString() + "個";
     }
-    public void GetChar(string c)
+    public void GetVoice(string c)
     {
         gotStatement += c;
         if (c != " ")
         {
-            gotChar++;
-            gotCharNumber.text = gotChar.ToString() + "/" + voiceNumber.ToString() + "文字";
+            gotVoice++;
+            gotCharNumber.text = gotVoice.ToString() + "/" + voiceNumber.ToString() + "文字";
         }
     }
     public void CancelNoise()
@@ -212,7 +214,6 @@ public class TutorialManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitUntil(() => isGame);
             Vector2 basePosition = taishiRect.anchoredPosition;
             taishiRect.anchoredPosition = new(basePosition.x, basePosition.y - 20);
             while (taishiRect.anchoredPosition.y < basePosition.y)
@@ -236,7 +237,6 @@ public class TutorialManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitUntil(() => isGame);
             while (true)
             {
                 float x = m.GetTextureOffset("_MainTex").x;
@@ -253,7 +253,9 @@ public class TutorialManager : MonoBehaviour
     }
     void GenerateStatement()
     {
-        Vector2 basePosition = new Vector2(960 - (gotStatement.Length / 2) * 100, 850); // 初期位置を設定
+        int circleSize = 70;
+
+        Vector2 basePosition = new(-700, 400); // 初期位置を設定
         int line = 0; // 何行目か
         int letter = 0; // line行目の何文字目か
 
@@ -265,30 +267,32 @@ public class TutorialManager : MonoBehaviour
                 letter = 0; // 行の文字リセット
             }
 
-            Vector3 position = basePosition + new Vector2(100 * letter, -line * 70); // 各文字の位置を計算
+            Vector2 position = basePosition + new Vector2(circleSize * letter, -circleSize * line); // 各文字の位置を計算
             char varchar = gotStatement[i];
 
             if (varchar == ' ')
             {
-                var instance = Instantiate(charPrefab, statementParent.transform);
+                GameObject instance = Instantiate(charPrefab, statementParent.transform);
                 instance.GetComponent<RectTransform>().anchoredPosition = position; // 各文字の位置を設定
                 instance.GetComponent<RectTransform>().localScale = new(1, 1); // スケールを設定
-                instance.transform.Find("char").GetComponent<Text>().text = " ";
-                instance.transform.Find("noise").GetComponent<Image>().enabled = true;
+                instance.transform.Find("Char").GetComponent<Text>().text = " ";
+                instance.transform.Find("Noise").GetComponent<Image>().enabled = true;
 
             }
             else
             {
-                var instance = Instantiate(charPrefab, statementParent.transform);
+                GameObject instance = Instantiate(charPrefab, statementParent.transform);
                 instance.GetComponent<RectTransform>().anchoredPosition = position;
-                instance.GetComponent<RectTransform>().localScale = new Vector2(1.0f, 1.0f); // スケールを設定
-                instance.transform.Find("char").GetComponent<Text>().text = varchar.ToString();
-                instance.transform.Find("noise").GetComponent<Image>().enabled = false;
+                instance.GetComponent<RectTransform>().localScale = new(1, 1); // スケールを設定
+                instance.transform.Find("Char").GetComponent<Text>().text = varchar.ToString();
+                instance.transform.Find("Noise").GetComponent<Image>().enabled = false;
             }
 
             letter++;
         }
-
-
+    }
+    private void OnDestroy()
+    {
+        m.SetTextureOffset("_MainTex", new(0.3f, 0));
     }
 }

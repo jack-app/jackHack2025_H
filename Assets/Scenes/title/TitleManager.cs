@@ -1,11 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
     [SerializeField] private GameObject black;
+    [SerializeField] private RectTransform startImageRect;
     [SerializeField] private RectTransform instructionImageRect;
     // Start is called before the first frame update
     void Start()
@@ -20,9 +20,13 @@ public class TitleManager : MonoBehaviour
     }
     public void GameStart()
     {
-        //if(Manager.quiz.Count != 0){
-            Manager.GenerateQuiz();  // クイズ読み込み
-        //}    
+        Manager.GenerateQuiz();  // クイズ読み込み
+        StartCoroutine(Commons.Button(startImageRect));
+        StartCoroutine(GameStartCoroutine());
+    }
+    private IEnumerator GameStartCoroutine()
+    {
+        yield return StartCoroutine(Commons.FadeOut(black));
         SceneManager.LoadScene("GameScene");
     }
     public void Tutorial()

@@ -1,16 +1,18 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private Material m;
     [SerializeField] private RectTransform taishiRect;
+    [SerializeField] private GameObject clickToStart;
     private string statement;
     private int voiceNumber = 0;
-    //private string gotStatement = "";
-    private int gotChar = 0;
+    private string gotStatement = "";
+    private int gotVoice = 0;
     private int canceledNoise = 0;
     private int generatedNoise = 0;
     [SerializeField] private Text quizCharNumber;
@@ -22,20 +24,38 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject notesParent;
     [SerializeField] private GameObject voiceNotesPrefab;
     [SerializeField] private GameObject noiseNotesPrefab;
+    [SerializeField] private GameObject finish;
+    [SerializeField] private GameObject black;
     private const int radius = 580;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        isGame = true;  //本来はクリックなどでプレイヤーが開始させてからtrueになる
+        UnityEngine.Random.InitState(DateTime.Now.Millisecond);
+        finish.SetActive(false);
         statement = Manager.quiz[Manager.currentQuiz].statement;
-        StartCoroutine(QuizCharNumber());
+        quizCharNumber.text = (Manager.currentQuiz + 1).ToString() + "/" + Manager.quizNumber.ToString() + "問目";
+        restCharNumber.text = "残り" + (statement.Length - voiceNumber).ToString() + "文字";
+        gotCharNumber.text = gotVoice.ToString() + "/" + voiceNumber.ToString() + "文字";
+        canceledNoiseNumber.text = canceledNoise.ToString() + "/" + generatedNoise.ToString() + "個";
+        StartCoroutine(ToStart());
+
+        //StartCoroutine(QuizCharNumber());
+        //StartCoroutine(RestCharNumber());
+        //StartCoroutine(GotCharNumber());
+        //StartCoroutine(CanceledNoiseNumber());
+    }
+
+    private IEnumerator ToStart()
+    {
+        yield return StartCoroutine(Commons.FadeIn(black));
+        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+        clickToStart.SetActive(false);
         StartCoroutine(TaishiMove());
         StartCoroutine(BeetMove());
-        StartCoroutine(RestCharNumber());
-        StartCoroutine(GotCharNumber());
-        StartCoroutine(CanceledNoiseNumber());
+        yield return new WaitForSeconds(Manager.interval * 5);
+        isGame = true;
     }
 
     // Update is called once per frame
@@ -51,6 +71,7 @@ public class GameManager : MonoBehaviour
                 if (voiceNumber == statement.Length)
                 {
                     isGame = false;
+                    StartCoroutine(GameFinish());
                 }
             }
             else
@@ -60,12 +81,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private IEnumerator GameFinish()
+    {
+        //ほんとは正確に最後のノーツの消滅を待ちたい
+        yield return new WaitForSeconds(1);
+        finish.SetActive(true);
+        yield return new WaitForSeconds(1);
+        Manager.newData.gotStatement = gotStatement;
+        Manager.newData.gotVoice = gotVoice;
+        Manager.newData.canceledNoise = canceledNoise;
+        Manager.newData.generatedNoise = generatedNoise;        //データをセーブ
+        yield return StartCoroutine(Commons.FadeOut(black));
+        SceneManager.LoadScene("QuizScene");
+    }
+
     //太子をノらせる
     private IEnumerator TaishiMove()
     {
         while (true)
         {
-            yield return new WaitUntil(() => isGame);
             Vector2 basePosition = taishiRect.anchoredPosition;
             taishiRect.anchoredPosition = new(basePosition.x, basePosition.y - 20);
             while (taishiRect.anchoredPosition.y < basePosition.y)
@@ -89,7 +123,6 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitUntil(() => isGame);
             while (true)
             {
                 float x = m.GetTextureOffset("_MainTex").x;
@@ -105,107 +138,103 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //何問目中何問目かを表示
-    private IEnumerator QuizCharNumber()
-    {
-        while(true)
-        {
-            yield return new WaitUntil(() => isGame);
-            while (true)
-            {                
-                int totalQuizNumber=Manager.quiz.Count;
-                quizCharNumber.text=(Manager.currentQuiz+1)+"/"+totalQuizNumber.ToString()+"問目";
-                yield return null;
-            }
-        }
+    ////何問目中何問目かを表示
+    //private IEnumerator QuizCharNumber()
+    //{
+    //    while(true)
+    //    {
+    //        yield return new WaitUntil(() => isGame);
+    //        while (true)
+    //        {                
+    //            int totalQuizNumber=Manager.quiz.Count;
+    //            quizCharNumber.text=(Manager.currentQuiz+1)+"/"+totalQuizNumber.ToString()+"問目";
+    //            yield return null;
+    //        }
+    //    }
         
-    }
+    //}
     
-    //残りの文字数を表示
-    private IEnumerator RestCharNumber()
-    {
-        while(true)
-        {
-            yield return new WaitUntil(() => isGame);
-            while (true)
-            {                
-                string statement=Manager.quiz[Manager.currentQuiz].statement;
-                int restNumber=statement.Length-voiceNumber;
-                restCharNumber.text="残り"+restNumber.ToString()+"文字";
-                yield return null;
-            }
-        }
+    ////残りの文字数を表示
+    //private IEnumerator RestCharNumber()
+    //{
+    //    while(true)
+    //    {
+    //        yield return new WaitUntil(() => isGame);
+    //        while (true)
+    //        {                
+    //            string statement=Manager.quiz[Manager.currentQuiz].statement;
+    //            int restNumber=statement.Length-voiceNumber;
+    //            restCharNumber.text="残り"+restNumber.ToString()+"文字";
+    //            yield return null;
+    //        }
+    //    }
         
-    }
+    //}
 
-    //聞き取った文字数を表示
-    private IEnumerator GotCharNumber()
-    {
-        while(true)
-        {
-            yield return new WaitUntil(() => isGame);
-            while (true)
-            {
-                int charnumber=statement.Length;
-                gotCharNumber.text = gotChar.ToString()+"/"+charnumber.ToString()+"文字";
-                //gotcharnumber.text="/文字だよ";
-                yield return null;
-            }
-        }
+    ////聞き取った文字数を表示
+    //private IEnumerator GotCharNumber()
+    //{
+    //    while(true)
+    //    {
+    //        yield return new WaitUntil(() => isGame);
+    //        while (true)
+    //        {
+    //            int charnumber=statement.Length;
+    //            gotCharNumber.text = gotVoice.ToString()+"/"+charnumber.ToString()+"文字";
+    //            //gotcharnumber.text="/文字だよ";
+    //            yield return null;
+    //        }
+    //    }
         
-    }
+    //}
 
-    //キャンセルしたノイズ数を表示
-    private IEnumerator CanceledNoiseNumber()
-    {
-        while(true)
-        {
-            yield return new WaitUntil(() => isGame);
-            while (true)
-            {
-                canceledNoiseNumber.text = canceledNoise.ToString()+"/"+ generatedNoise.ToString()+"個";
-                //gotcharnumber.text="/文字だよ";
-                yield return null;
-            }
-        }
+    ////キャンセルしたノイズ数を表示
+    //private IEnumerator CanceledNoiseNumber()
+    //{
+    //    while(true)
+    //    {
+    //        yield return new WaitUntil(() => isGame);
+    //        while (true)
+    //        {
+    //            canceledNoiseNumber.text = canceledNoise.ToString()+"/"+ generatedNoise.ToString()+"個";
+    //            //gotcharnumber.text="/文字だよ";
+    //            yield return null;
+    //        }
+    //    }
         
-    }
-    private void OnDestroy()
-    {
-        m.SetTextureOffset("_MainTex", new(0.3f, 0));
-    }
+    //}
 
     private void GenerateNotes()
     {
         Vector2 pos = new (0, 0);
-        int rnd = Random.Range(1, 11);
-        int direction = Random.Range(1, 9);
+        int rnd = UnityEngine.Random.Range(1, 11);
+        int direction = UnityEngine.Random.Range(1, 9);
 
         switch (direction)
         {
             case 1:
-                pos = new Vector2(radius, 0);
+                pos = new(radius, 0);
                 break;
             case 2:
-                pos = new Vector2(radius * Mathf.Cos(Mathf.PI / 4), radius * Mathf.Sin(Mathf.PI / 4));
+                pos = new(radius * Mathf.Cos(Mathf.PI / 4), radius * Mathf.Sin(Mathf.PI / 4));
                 break;
             case 3:
-                pos = new Vector2(0, radius);
+                pos = new(0, radius);
                 break;
             case 4:
-                pos = new Vector2(-radius * Mathf.Cos(Mathf.PI / 4), radius * Mathf.Sin(Mathf.PI / 4));
+                pos = new(-radius * Mathf.Cos(Mathf.PI / 4), radius * Mathf.Sin(Mathf.PI / 4));
                 break;
             case 5:
-                pos = new Vector2(-radius, 0);
+                pos = new(-radius, 0);
                 break;
             case 6:
-                pos = new Vector2(-radius * Mathf.Cos(Mathf.PI / 4), -radius * Mathf.Sin(Mathf.PI / 4));
+                pos = new(-radius * Mathf.Cos(Mathf.PI / 4), -radius * Mathf.Sin(Mathf.PI / 4));
                 break;
             case 7:
-                pos = new Vector2(0, -radius);
+                pos = new(0, -radius);
                 break;
             case 8:
-                pos = new Vector2(radius * Mathf.Cos(Mathf.PI / 4), -radius * Mathf.Sin(Mathf.PI / 4));
+                pos = new(radius * Mathf.Cos(Mathf.PI / 4), -radius * Mathf.Sin(Mathf.PI / 4));
                 break;
         }
         if(rnd <= 5)
@@ -214,6 +243,8 @@ public class GameManager : MonoBehaviour
             notes.GetComponent<RectTransform>().anchoredPosition = pos;
             notes.GetComponent<RectTransform>().localScale = new(1, 1);
             notes.transform.Find("Char").GetComponent<Text>().text = statement[voiceNumber].ToString();
+            restCharNumber.text = "残り" + (statement.Length - voiceNumber).ToString() + "文字";
+            gotCharNumber.text = gotVoice.ToString() + "/" + voiceNumber.ToString() + "文字";
             voiceNumber++;
         }
         else if(rnd <= 8)
@@ -221,17 +252,26 @@ public class GameManager : MonoBehaviour
             GameObject notes = Instantiate(noiseNotesPrefab, notesParent.transform);
             notes.GetComponent<RectTransform>().anchoredPosition = pos;
             notes.GetComponent<RectTransform>().localScale = new(1, 1);
+            canceledNoiseNumber.text = canceledNoise.ToString() + "/" + generatedNoise.ToString() + "個";
             generatedNoise++;
         }
     }
-    //Taishi.csから呼び出し、どの文字を聞き取ったかの処理を行う
-    //public void GetChar(string c)
-    //{
-
-    //}
-    //Canceler.csから呼び出し、キャンセルしたノイズについての処理を行う(cancelledNoiseをpublicにするだけでもいいかも)
-    //public void CancelNoise()
-    //{
-
-    //}
+    public void GetVoice(string c)
+    {
+        gotStatement += c;
+        if (c != " ")
+        {
+            gotVoice++;
+            gotCharNumber.text = gotVoice.ToString() + "/" + voiceNumber.ToString() + "文字";
+        }
+    }
+    public void CancelNoise()
+    {
+        canceledNoise++;
+        canceledNoiseNumber.text = canceledNoise.ToString() + "/" + generatedNoise.ToString() + "個";
+    }
+    private void OnDestroy()
+    {
+        m.SetTextureOffset("_MainTex", new(0.3f, 0));
+    }
 }
