@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CancelerTutorial : MonoBehaviour
 {
+    [SerializeField] private TutorialManager tutorialManager;
     private RectTransform cancelerRect;
     private Vector2 mousePosition;
     private const int radius = 150;
@@ -49,12 +51,13 @@ public class CancelerTutorial : MonoBehaviour
     {
         if (collision.CompareTag("Voice"))
         {
-            //文字の取得
-
-            Destroy(collision.gameObject);
+            //声は順番が前後してほしくない、ここでは透明にするだけ
+            collision.gameObject.GetComponent<Image>().color = new(1, 1, 1, 0);
+            collision.transform.Find("Char").GetComponent<Text>().text = " ";
         }
         else if (collision.CompareTag("Noise"))
         {
+            tutorialManager.CancelNoise();
             Destroy(collision.gameObject);
         }
     }
