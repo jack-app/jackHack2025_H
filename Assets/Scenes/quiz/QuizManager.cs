@@ -38,10 +38,6 @@ public class QuizManager : MonoBehaviour
 
         GenerateStatement();
         
-        // 非同期メソッド実行
-        //timer(destroyCancellationToken).Forget();
-        
-
         choise1.transform.GetChild(0).GetComponent<Text>().text = choises[0];
         choise2.transform.GetChild(0).GetComponent<Text>().text = choises[1];
         choise3.transform.GetChild(0).GetComponent<Text>().text = choises[2];
