@@ -1055,6 +1055,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m: {fileID: 2100000, guid: 03e01de539f851240b0a80eb67950bcb, type: 2}
   taishiRect: {fileID: 126861831}
+  gotCharNumber: {fileID: 1401797295}
+  canceledNoiseNumber: {fileID: 1938492340}
+  notesParent: {fileID: 1030670488}
+  voiceNotesPrefab: {fileID: 3757185141286892958, guid: 2f4904ef266bd7d479e342e59f4edbad, type: 3}
+  noiseNotesPrefab: {fileID: 1504530419917269400, guid: 0e326d40320242c4b82fa20ee838ae58, type: 3}
 --- !u!1 &1129287910
 GameObject:
   m_ObjectHideFlags: 0
