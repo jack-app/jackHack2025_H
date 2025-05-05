@@ -20,6 +20,9 @@ public class TitleManager : MonoBehaviour
     }
     public void GameStart()
     {
+        //if(Manager.quiz.Count != 0){
+            Manager.GenerateQuiz();  // クイズ読み込み
+        //}    
         SceneManager.LoadScene("GameScene");
     }
     public void Tutorial()

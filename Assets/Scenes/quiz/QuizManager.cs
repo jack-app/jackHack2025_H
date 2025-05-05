@@ -99,7 +99,6 @@ public class QuizManager : MonoBehaviour
         //while(true)
         //{
             yield return new WaitUntil(() => isGame);
-            //for(int i=10;i>0;i--)  
             while(seconds>0)
             {           
                 // 1秒間待つ
@@ -119,7 +118,6 @@ public class QuizManager : MonoBehaviour
                     choise1button.interactable = false;
                     choise2button.interactable = false;
                     choise3button.interactable = false;
-                    //yield return null;
                 }
                 
             }
