@@ -5,17 +5,18 @@ using UnityEngine;
 public class NotesMover : MonoBehaviour
 {
     private RectTransform rectTransform;
-    private const int speed = 1160;
+    private float speed;
+    private int distance = 345;         //ノーツの半径とノイキャンの位置も踏まえた、ノーツ発射から衝突までの距離
     // Start is called before the first frame update
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
+        speed = distance / (Manager.interval * 2);          //発射からノーツ生成2回分でノイキャンに到達
     }
 
     // Update is called once per frame
     void Update()
     {
-        //0.5秒で中心に到達する(本当はノーツ生成の間隔を使って一律制御したい)
         Vector2 temp = rectTransform.anchoredPosition;
         float angle = Mathf.Atan2(temp.y, temp.x);
         temp.x -= speed * Mathf.Cos(angle) * Time.deltaTime;

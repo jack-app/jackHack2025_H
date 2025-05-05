@@ -30,30 +30,30 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator MainCoroutine()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1);
         panel.SetActive(true);
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
         panel.SetActive(false);
         GenerateVoiceNotes(new(radius, 0), "聖");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Manager.interval * 3);
         panel.SetActive(true);
         explanation.text = "今流れてきたのが周囲の人々の声です。全て集めると質問文が完成します。";
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
         panel.SetActive(false);
         GenerateVoiceNotes(new(0, radius), "徳");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Manager.interval * 2);
         panel.SetActive(true);
         explanation.text = "声をノイズキャンセリングしてしまうと、質問に答えるときその文字が読めなくなってしまいます。";
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
         panel.SetActive(false);
         GenerateNoiseNotes(new(0, radius));
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Manager.interval * 2);
         panel.SetActive(true);
         explanation.text = "今流れてきたのがノイズです。全力でキャンセルしましょう！";
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
         panel.SetActive(false);
         GenerateNoiseNotes(new(radius, 0));
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Manager.interval * 3);
         panel.SetActive(true);
         explanation.text = "太子くんの耳にノイズが入ってしまうと、しばらく画面全体が見にくくなってしまいます。";
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
