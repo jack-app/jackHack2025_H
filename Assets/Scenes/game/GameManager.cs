@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Material m;
     [SerializeField] private RectTransform taishiRect;
-    [SerializeField] private Text gotcharnumber;
+    [SerializeField] private Text gotCharNumber;
+    [SerializeField] private Text canceledNoiseNumber;
     private bool isGame = false;    //ゲーム中にtrueになる変数
     private float intervalCount = 0f;
     [SerializeField] private GameObject notesParent;
@@ -17,13 +18,15 @@ public class GameManager : MonoBehaviour
     private const int radius = 580;
     private int voiceNumber = 0;
     private int generatedNoise = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         isGame = true;  //本来はクリックなどでプレイヤーが開始させてからtrueになる
         StartCoroutine(TaishiMove());
         StartCoroutine(BeetMove());
-        //StartCoroutine(Gotcharnumber());
+        StartCoroutine(GotCharNumber());
+        StartCoroutine(CanceledNoiseNumber());
     }
 
     // Update is called once per frame
@@ -89,28 +92,35 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+
     //聞き取った文字数を表示
-    private IEnumerator Gotcharnumber()
+    private IEnumerator GotCharNumber()
     {
         while(true)
         {
             yield return new WaitUntil(() => isGame);
             while (true)
-            {
-
-                //Manager.Savedata savedata = new Manager.Savedata();
-                //Manager.Quiz quiz = new Manager.Quiz();
-                //Manager.Savedata savedata=Manager.savedata[0];
-                //Manager.Quiz quiz = Manager.quiz[0];
-
-                List<Manager.Savedata> savedata = Manager.savedata; //セーブデータのリスト
-                List<Manager.Quiz> quiz = Manager.quiz; //クイズのリスト
-                string gotstatement=savedata[0].gotStatement;
-                string statement=quiz[0].statement;
-                int gotnumber=gotstatement.Length;
+            {                
+                string statement=Manager.quiz[Manager.currentQuiz].statement;
                 int charnumber=statement.Length;
-                gotcharnumber.text=gotnumber.ToString()+"/"+charnumber.ToString()+"/文字だよ";
+                gotCharNumber.text=voiceNumber.ToString()+"/"+charnumber.ToString()+"文字";
+                //gotcharnumber.text="/文字だよ";
+                yield return null;
+            }
+        }
+        
+    }
+
+    //キャンセルしたノイズ数を表示
+    private IEnumerator CanceledNoiseNumber()
+    {
+        while(true)
+        {
+            yield return new WaitUntil(() => isGame);
+            while (true)
+            {                
+                int canceledNoise = Manager.newData.canceledNoise; // TODO: ノイズの発生のたびに増やす値が必要
+                canceledNoiseNumber.text=generatedNoise.ToString()+"/"+canceledNoise.ToString()+"個";
                 //gotcharnumber.text="/文字だよ";
                 yield return null;
             }
