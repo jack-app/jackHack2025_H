@@ -19,10 +19,14 @@ public class QuizManager : MonoBehaviour
 
     private int seconds = 10;
     private bool choised = false;
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip clickSE;
+    [SerializeField] private AudioClip timeupSE;
 
     // 問題および選択肢の文章をUIに反映
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         string[] choises = Manager.quiz[Manager.currentQuiz].choices.ToArray(); //選択肢の取得
         timeup.SetActive(false);
         GenerateStatement();
@@ -45,7 +49,7 @@ public class QuizManager : MonoBehaviour
         
         for(var i = 0; i < statement.Length; i++)
         {
-            if(letter >= 20)
+            if(letter > 20)
             {
                 line++; // 20文字ごとに1行加算
                 letter = 0; // 行の文字リセット
@@ -77,6 +81,7 @@ public class QuizManager : MonoBehaviour
     // タイマーとボタン押せなくする
     private IEnumerator Timer()
     {
+        yield return new WaitForSeconds(1);
         while(seconds > 0)
         {           
             // 1秒間待つ
@@ -101,6 +106,8 @@ public class QuizManager : MonoBehaviour
     private IEnumerator TimeUp()
     {
         timeup.SetActive(true);
+        audioSource.clip = timeupSE;
+        audioSource.Play();
         Manager.newData.selectedAnswer = 0;
         yield return new WaitForSeconds(1);
         yield return StartCoroutine(Commons.FadeOut(black));
@@ -110,6 +117,8 @@ public class QuizManager : MonoBehaviour
     private IEnumerator Answer()
     {
         choised = true;
+        audioSource.clip = clickSE;
+        audioSource.Play();
         yield return new WaitForSeconds(0.2f);
         yield return StartCoroutine(Commons.FadeOut(black));
         SceneManager.LoadScene("AnswerScene");

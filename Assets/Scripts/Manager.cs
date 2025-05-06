@@ -89,4 +89,9 @@ public class Manager : MonoBehaviour
         newData = new();
         currentQuiz++;
     }
+    public static void GameEnd()
+    {
+        //セーブデータを記録するならここで
+        savedata.Clear();
+    }
 }

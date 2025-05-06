@@ -7,10 +7,12 @@ public class TitleManager : MonoBehaviour
     [SerializeField] private GameObject black;
     [SerializeField] private RectTransform startImageRect;
     [SerializeField] private RectTransform instructionImageRect;
+    private AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(Commons.FadeIn(black));
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -20,17 +22,19 @@ public class TitleManager : MonoBehaviour
     }
     public void GameStart()
     {
-        Manager.GenerateQuiz();  // クイズ読み込み
-        StartCoroutine(Commons.Button(startImageRect));
+        audioSource.Play();
         StartCoroutine(GameStartCoroutine());
     }
     private IEnumerator GameStartCoroutine()
     {
+        yield return StartCoroutine(Commons.Button(startImageRect));
+        Manager.GenerateQuiz();  // クイズ読み込み
         yield return StartCoroutine(Commons.FadeOut(black));
         SceneManager.LoadScene("GameScene");
     }
     public void Tutorial()
     {
+        audioSource.Play();
         StartCoroutine(Commons.Button(instructionImageRect));
         StartCoroutine(TutorialCoroutine());
     }

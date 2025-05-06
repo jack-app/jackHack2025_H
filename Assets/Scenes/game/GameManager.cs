@@ -27,12 +27,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject finish;
     [SerializeField] private GameObject black;
     private const int radius = 580;
-    
+    private AudioSource audioSource;
+    [SerializeField] private AudioSource finishAudioSource;
+
 
     // Start is called before the first frame update
     void Start()
     {
         UnityEngine.Random.InitState(DateTime.Now.Millisecond);
+        audioSource = GetComponent<AudioSource>();
         finish.SetActive(false);
         statement = Manager.quiz[Manager.currentQuiz].statement;
         quizCharNumber.text = (Manager.currentQuiz + 1).ToString() + "/" + Manager.quizNumber.ToString() + "問目";
@@ -86,6 +89,7 @@ public class GameManager : MonoBehaviour
         //ほんとは正確に最後のノーツの消滅を待ちたい
         yield return new WaitForSeconds(1);
         finish.SetActive(true);
+        finishAudioSource.Play();
         yield return new WaitForSeconds(1);
         Manager.newData.gotStatement = gotStatement;
         Manager.newData.gotVoice = gotVoice;
@@ -102,6 +106,7 @@ public class GameManager : MonoBehaviour
         {
             Vector2 basePosition = taishiRect.anchoredPosition;
             taishiRect.anchoredPosition = new(basePosition.x, basePosition.y - 20);
+            audioSource.Play();
             while (taishiRect.anchoredPosition.y < basePosition.y)
             {
                 yield return null;
@@ -243,17 +248,17 @@ public class GameManager : MonoBehaviour
             notes.GetComponent<RectTransform>().anchoredPosition = pos;
             notes.GetComponent<RectTransform>().localScale = new(1, 1);
             notes.transform.Find("Char").GetComponent<Text>().text = statement[voiceNumber].ToString();
+            voiceNumber++;
             restCharNumber.text = "残り" + (statement.Length - voiceNumber).ToString() + "文字";
             gotCharNumber.text = gotVoice.ToString() + "/" + voiceNumber.ToString() + "文字";
-            voiceNumber++;
         }
         else if(rnd <= 8)
         {
             GameObject notes = Instantiate(noiseNotesPrefab, notesParent.transform);
             notes.GetComponent<RectTransform>().anchoredPosition = pos;
             notes.GetComponent<RectTransform>().localScale = new(1, 1);
-            canceledNoiseNumber.text = canceledNoise.ToString() + "/" + generatedNoise.ToString() + "個";
             generatedNoise++;
+            canceledNoiseNumber.text = canceledNoise.ToString() + "/" + generatedNoise.ToString() + "個";
         }
     }
     public void GetVoice(string c)

@@ -22,9 +22,15 @@ public class AnswerManager : MonoBehaviour
     private readonly List<string> goodComments = new() { "さすが太子！！", "今日も髭がかっこいい！" };
     private readonly List<string> badComments = new() {"聞き取れてねーじゃん！！" , "なんだよ変な髭しやがって！"};
 
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip systemSE;
+    [SerializeField] private AudioClip correctSE;
+    [SerializeField] private AudioClip incorrectSE;
+
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         black.SetActive(false);
         black.GetComponent<Image>().color = new(0, 0, 0, 0);
         UnityEngine.Random.InitState(DateTime.Now.Millisecond);
@@ -52,6 +58,8 @@ public class AnswerManager : MonoBehaviour
             taishi.transform.Find("Star").gameObject.SetActive(true);
             Manager.newData.isCorrect = true;
             Manager.Save();
+            audioSource.clip = correctSE;
+            audioSource.Play();
         }
         else
         {
@@ -64,6 +72,8 @@ public class AnswerManager : MonoBehaviour
             taishi.transform.Find("ase").gameObject.SetActive(true);
             Manager.newData.isCorrect = false;
             Manager.Save();
+            audioSource.clip = incorrectSE;
+            audioSource.Play();
         }
         if (Manager.currentQuiz == Manager.quizNumber)
         {
@@ -73,6 +83,8 @@ public class AnswerManager : MonoBehaviour
 
     public void Next()
     {
+        audioSource.clip = systemSE;
+        audioSource.Play();
         StartCoroutine(Commons.Button(buttonRect));
         StartCoroutine(NextCoroutine());
     }
