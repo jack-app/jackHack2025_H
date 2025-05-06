@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NotesMover : MonoBehaviour
 {
     private RectTransform rectTransform;
     private float speed;
-    private int distance = 345;         //ノーツの半径とノイキャンの位置も踏まえた、ノーツ発射から衝突までの距離
+    private const int distance = 345;         //ノーツの半径とノイキャンの位置も踏まえた、ノーツ発射から衝突までの距離
     // Start is called before the first frame update
     void Start()
     {
