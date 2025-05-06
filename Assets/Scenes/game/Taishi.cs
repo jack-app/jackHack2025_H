@@ -7,19 +7,38 @@ public class Taishi : MonoBehaviour
     [SerializeField] private GameManager gameManager;
     [SerializeField] private RectTransform noiseParent;
     [SerializeField] private Sprite noiseSprite;
+    [SerializeField] private RectTransform starsParent;
+    [SerializeField] private Sprite starsSprite;
     private const int radius = 350;
     private const int size = 700;
+    private const int size2 = 225;
+    AudioSource audioSource;
+    [SerializeField] private AudioClip voiceSE;
+    [SerializeField] private AudioClip noiseSE;
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Voice"))
         {
             string c = collision.transform.Find("Char").GetComponent<Text>().text;
             gameManager.GetVoice(c);
+            if (c != " ")
+            {
+                audioSource.clip = voiceSE;
+                audioSource.Play();
+                GenerateStars();
+            }
             Destroy(collision.gameObject);
         }
         else if (collision.CompareTag("Noise"))
         {
             GenerateNoise(collision.GetComponent<RectTransform>());
+            audioSource.clip = noiseSE;
+            audioSource.Play();
             Destroy(collision.gameObject);
         }
     }
@@ -46,5 +65,20 @@ public class Taishi : MonoBehaviour
             yield return null;
         }
         Destroy(noise);
+    }
+    private void GenerateStars()
+    {
+        GameObject newStars = new("Stars", typeof(Image));
+        newStars.GetComponent<Image>().sprite = starsSprite;
+        newStars.transform.SetParent(starsParent, false);
+        RectTransform starsRect = newStars.GetComponent<RectTransform>();
+        starsRect.anchoredPosition = new(0, 0);
+        starsRect.sizeDelta = new(size2, size2);
+        StartCoroutine(DestroyStars(newStars));
+    }
+    private IEnumerator DestroyStars(GameObject stars)
+    {
+        yield return new WaitForSeconds(0.5f);
+        Destroy(stars);
     }
 }

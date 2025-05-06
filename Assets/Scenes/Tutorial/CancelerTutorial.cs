@@ -10,10 +10,14 @@ public class CancelerTutorial : MonoBehaviour
     private int screenWidth;
     private int screenHeight;
     private bool canMove = false;
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip voiceSE;
+    [SerializeField] private AudioClip noiseSE;
     // Start is called before the first frame update
     void Start()
     {
         cancelerRect = GetComponent<RectTransform>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -51,10 +55,14 @@ public class CancelerTutorial : MonoBehaviour
             //声は順番が前後してほしくない、ここでは透明にするだけ
             collision.gameObject.GetComponent<Image>().color = new(1, 1, 1, 0);
             collision.transform.Find("Char").GetComponent<Text>().text = " ";
+            audioSource.clip = voiceSE;
+            audioSource.Play();
         }
         else if (collision.CompareTag("Noise"))
         {
             tutorialManager.CancelNoise();
+            audioSource.clip = noiseSE;
+            audioSource.Play();
             Destroy(collision.gameObject);
         }
     }

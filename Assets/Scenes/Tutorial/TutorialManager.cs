@@ -32,10 +32,16 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private GameObject finish;
     [SerializeField] private GameObject statementParent;
     [SerializeField] private GameObject charPrefab;
+    private AudioSource audioSource;
+    [SerializeField] private AudioSource finishAudioSource;
+    [SerializeField] private AudioClip systemSE;
+    [SerializeField] private AudioClip beetSE;
+    private Coroutine taishiCoroutine;
     // Start is called before the first frame update
     void Start()
     {
         UnityEngine.Random.InitState(DateTime.Now.Millisecond);
+        audioSource = GetComponent<AudioSource>();
         quizTutorial.SetActive(false);
         panel.SetActive(false);
         finish.SetActive(false);
@@ -74,37 +80,43 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(1);
         panel.SetActive(true);
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
+        audioSource.clip = systemSE;
+        audioSource.Play();
         panel.SetActive(false);
         GenerateVoiceNotes(new(radius, 0), "聖");
         yield return new WaitForSeconds(Manager.interval * 3);
         panel.SetActive(true);
         explanation.text = "今流れてきたのが周囲の人々の声です。全て集めると質問文が完成します。";
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
+        audioSource.Play();
         panel.SetActive(false);
         GenerateVoiceNotes(new(0, radius), "徳");
         yield return new WaitForSeconds(Manager.interval * 2);
         panel.SetActive(true);
         explanation.text = "声をノイズキャンセリングしてしまうと、質問に答えるときその文字が読めなくなってしまいます。";
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
+        audioSource.Play();
         panel.SetActive(false);
         GenerateNoiseNotes(new(0, radius));
         yield return new WaitForSeconds(Manager.interval * 2);
         panel.SetActive(true);
         explanation.text = "今流れてきたのがノイズです。全力でキャンセルしましょう！";
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
+        audioSource.Play();
         panel.SetActive(false);
         GenerateNoiseNotes(new(radius, 0));
         yield return new WaitForSeconds(Manager.interval * 3);
         panel.SetActive(true);
         explanation.text = "太子くんの耳にノイズが入ってしまうと、しばらく画面全体が見にくくなってしまいます。";
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
+        audioSource.Play();
         cTutorial.PermitMove();
         explanation.text = "ノイズキャンセリングはマウス(スマホならタッチ位置)の方向に追従します。ノイキャンしつつみんなの声を聞き取ろう！";
         yield return null;
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
         panel.SetActive(false);
         isGame = true;
-        StartCoroutine(TaishiMove());
+        taishiCoroutine = StartCoroutine(TaishiMove());
         StartCoroutine(BeetMove());
     }
     private void GenerateNotes()
@@ -186,26 +198,34 @@ public class TutorialManager : MonoBehaviour
         //ほんとは最後のノーツ消滅までを待つ
         yield return new WaitForSeconds(1f);
         finish.SetActive(true);
+        finishAudioSource.Play();
         yield return new WaitForSeconds(1f);
         yield return StartCoroutine(Commons.FadeOut(black));
         gameTutorial.SetActive(false);
+        StopCoroutine(taishiCoroutine);
         quizTutorial.SetActive(true);
         GenerateStatement();
         yield return StartCoroutine(Commons.FadeIn(black));
         explanation.text = "ノイキャンで太子くんをサポートしたら、次は質問に答えることになります。";
         panel.SetActive(true);
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
+        audioSource.clip = systemSE;
+        audioSource.Play();
         explanation.text = "回答には制限時間がありますが、しっかり聞き取れていたらきっと答えられるはず！間違えると人々の罵倒を受けることも……。";
         yield return null;
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
+        audioSource.Play();
         explanation.text = "立派な聖徳太子を目指し、ノイキャンもクイズも頑張りましょう！";
         yield return null;
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return));
+        audioSource.Play();
         yield return StartCoroutine(Commons.FadeOut(black));
         SceneManager.LoadScene("TitleScene");
     }
     public void Title()
     {
+        audioSource.clip = systemSE;
+        audioSource.Play();
         SceneManager.LoadScene("TitleScene");
     }
 
@@ -216,6 +236,8 @@ public class TutorialManager : MonoBehaviour
         {
             Vector2 basePosition = taishiRect.anchoredPosition;
             taishiRect.anchoredPosition = new(basePosition.x, basePosition.y - 20);
+            audioSource.clip = beetSE;
+            audioSource.Play();
             while (taishiRect.anchoredPosition.y < basePosition.y)
             {
                 yield return null;
@@ -261,7 +283,7 @@ public class TutorialManager : MonoBehaviour
 
         for (var i = 0; i < gotStatement.Length; i++)
         {
-            if (letter >= 20)
+            if (letter > 20)
             {
                 line++; // 20文字ごとに1行加算
                 letter = 0; // 行の文字リセット
