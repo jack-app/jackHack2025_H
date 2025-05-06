@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
-using System.Linq;
+//using System.Linq;
 using System;
 
 public class Manager : MonoBehaviour

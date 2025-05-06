@@ -19,8 +19,8 @@ public class AnswerManager : MonoBehaviour
     [SerializeField] private Text buttonText;
     [SerializeField] private GameObject black;
 
-    private readonly List<string> goodComments = new() { "さすが太子！！", "今日も髭がかっこいい！" };
-    private readonly List<string> badComments = new() {"聞き取れてねーじゃん！！" , "なんだよ変な髭しやがって！"};
+    private readonly List<string> goodComments = new() {"さすが太子！！", "今日も髭がかっこいい！", "まさに豊聡耳!カッコイイよ!!", "民も仏も、あなたに感謝してます！", "蘇我馬子も思わず拍手！", "神仏もスタンディングオベーション！", "「日出ずる処の天子」、今日も絶好調！", "よっ！マルチタスクの神！", "耳がでかいだけのことはある……！"};
+    private readonly List<string> badComments = new() {"聞き取れてねーじゃん！！" , "なんだよ変な髭しやがって！", "これだから虚構説が出てくるんだよ 偽物め!!", "太子、補聴器いるか？", "民も仏も、頭を抱えています…！", "聖徳じゃなく凡徳だ!!", "修行が足りなかったようだな！", "馬小屋から出直して来い！", "仏もほっとくレベルだぞ", "耳だけでかくても意味ないぞ、太子！", "十人同時って…聞いたふりじゃん…"};
 
     private AudioSource audioSource;
     [SerializeField] private AudioClip systemSE;
