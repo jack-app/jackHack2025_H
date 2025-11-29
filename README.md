@@ -1,2 +1,8 @@
-# Free AI at api.airforce
-https://discord.gg/AJDsM7jtbq
+# jackHack2025_H
+## ノイキャン太子
+
+### 概要
+ノイズをキャンセルしながら音を聞き取り、聞き取った音をもとに正確な回答をしよう！
+
+### 使用技術
+Unity 2022.3.55
